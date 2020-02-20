@@ -44,7 +44,7 @@ dd@dd-pc:~$ rostopic list
 - Для установки нужно перейти по этой [ссылке](https://coppeliarobotics.com/ubuntuVersions) и выбрать `CoppeliaSim Edu, Ubuntu 18.04`.
 - После установки необходимо распаковать в удобное для вас место
 - После чего необходимо:
-  1. Скопировать содержимое папки `simulation/coppeliasim/` в `$_ПАПКА_РАСПАКОВКИ_COPPELIASIM/`. Должно получиться следующая структура
+  1. Скопировать содержимое папки `coppeliasim/` в `$_ПАПКА_РАСПАКОВКИ_COPPELIASIM/`. Должно получиться следующая структура
 - ![скриншот_1](https://i.imgur.com/4E4UKLu.png?raw=true)
 - После чего запускаем среду моделирования `./coppiliaSim.sh`. Перед запуском нужно убедиться что roscore запущен. Иначе плагин `ROSInterface` не загрузится
 - После запуска нажимаем `File -> Open Scene ...` и выбираем сцену которая находится `$_ПАПКА_РАСПАКОВКИ_COPPELIASIM/scenes/user-scenes/nkbvs.ttt`
