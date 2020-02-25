@@ -1,0 +1,31 @@
+require 'msg/Odometry'
+
+function sysCall_init()
+    objectHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
+    objectName=sim.getObjectName(objectHandle)
+    velodyneScript = sim.getScriptAssociatedWithObject(sim.getObjectHandle('velodyneHDL_64E_S2'))
+    rosInterfacePresent=simROS
+    if rosInterfacePresent then
+        publisherOdometry = simROS.advertise("/sim_ros_interface/odometry","nav_msgs/Odometry",10)
+    end
+    
+end
+
+function sysCall_actuation()
+
+    if rosInterfacePresent then
+        simROS.publish(publisherOdometry,createOdometryWithHeader(objectHandle,'world','odom'))   -- world is base frame        
+    end
+   
+end
+
+function sysCall_sensing()
+    -- put your sensing code here
+end
+
+function sysCall_cleanup()
+    if rosInterfacePresent then
+        simROS.shutdownPublisher(publisher)
+    end
+end
+

@@ -1,0 +1,33 @@
+function sysCall_init()
+    visionSensorHandles={}
+    ObjHandle = sim.getObjectHandle('velodyneHDL_64E_S2')
+    ParentHandle = sim.getObjectHandle('Robotnik_Summit_XL')
+    
+    for i=1,4,1 do
+        visionSensorHandles[i]=sim.getObjectHandle('velodyneHDL_64E_S2_sensor'..i)
+    end
+    rotJointHandle=sim.getObjectHandle('velodyneHDL_64E_S2_rotJoint')
+    ptCloudHandle=sim.getObjectHandle('velodyneHDL_64E_S2_ptCloud')
+    frequency=5 -- 5 Hz
+    options=2+8 -- bit0 (1)=do not display points, bit1 (2)=display only current points, bit2 (4)=returned data is polar (otherwise Cartesian), bit3 (8)=displayed points are emissive
+    pointSize=2
+    coloring_closeAndFarDistance={1,4}
+    displayScaling=0.999 -- so that points do not appear to disappear in objects
+   _h=simExtVelodyneROS_createVelodyneROSModel(visionSensorHandles,frequency,options,pointSize,coloring_closeAndFarDistance,displayScaling)
+end
+
+function sysCall_actuation()
+    p=sim.getJointPosition(rotJointHandle)
+    p=p+sim.getSimulationTimeStep()*frequency*math.pi*2
+    sim.setJointPosition(rotJointHandle,p)
+    pos = sim.getObjectPosition(ObjHandle,ParentHandle)
+end
+
+
+function sysCall_sensing()
+    simExtVelodyneROS_handleVelodyneROSModel(_h,sim.getSimulationTimeStep())
+end
+
+function sysCall_cleanup()
+    simExtVelodyneROS_destroyVelodyneROSModel(_h)
+end
