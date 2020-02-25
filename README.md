@@ -1,3 +1,10 @@
+# Структура репозитория.
+- `coppeliasim/` - папка содержащая сцены и неоходимые для запуска сцены скрипты.
+- `rviz/` - папка содержащая конфиг для rviz.
+- `scripts/` - папка содержащая скрипты которые "вешаются" на Lidar и на тело робота. (Они уже встроены в сцену, их не надо вешать самому. Они лежат тут что бы можно было просмотреть скрипты без запуска сцены.
+- `plugin/` - папка содержащая CMake скрипт и скомпилированный плагин.
+ 
+
 # Инструкция по установки [`Coppeliasim`](https://coppeliarobotics.com/ubuntuVersions) и [`ROS`](http://wiki.ros.org/melodic/Installation/Ubuntu) 
 ## Установка ROS (Melodic)
 - Впервую очередь необходимо установить и настроить ROS. [Тут](http://wiki.ros.org/melodic/Installation/Ubuntu) есть подробная иструкция по установке и настройке ROS.
@@ -46,7 +53,12 @@ dd@dd-pc:~$ rostopic list
 - После чего необходимо:
   1. Скопировать содержимое папки `coppeliasim/` в `$_ПАПКА_РАСПАКОВКИ_COPPELIASIM/`. Должно получиться следующая структура
 - ![скриншот_1](https://i.imgur.com/4E4UKLu.png?raw=true)
-- После чего запускаем среду моделирования `./coppiliaSim.sh`. Перед запуском нужно убедиться что roscore запущен. Иначе плагин `ROSInterface` не загрузится
+- После чего скачиваем этот [плагин] (https://github.com/omcandido/vrep_plugin_velodyne.git) Данный плагин является catkin пакетом. Т.е его нужно собрать ( скомпилировать ). Для этого необходимо инициализировать catkin рабочую директорию и положить скаченный пакет в дирректорию **src/**. Подробней как это делается, описано [тут](http://wiki.ros.org/catkin/Tutorials) (А именно пункты 1 и 3)
+- Перед тем как скомпилировать пакет, замените файл находящийся в catkin дирректории`src/vrep_plugin_velodyne-master/CMakeLists.txt` на файл `plugin/CMakeLists.txt`. Если этого не сделать полезут ошибки при компиляции.
+- Если "лень" это все делать, в папке `plugin/` лежит уже скомпилированный файл, но возможно такая ситуация что он не запустится (Coppeliasim будет ругаться), тогда все таки придется скомпилировать плагин самостоятельно. И тогда следующий пункт для вас. 
+- После сборки пакета, на выходе должен быть файл **libv_repExtRosVelodyne.so**. По умолчанию он будет храниться **devel/lib/**
+- Данный файл (или файл `plugin/libv_repExtRosVelodyne.so`) нужно скопировать в `$_ПАПКА_РАСПАКОВКИ_COPPELIASIM/`
+- После чего запускаем среду моделирования `./coppiliaSim.sh`. Перед запуском нужно убедиться что roscore запущен. Иначе плагин не загрузится
 - После запуска нажимаем `File -> Open Scene ...` и выбираем сцену которая находится `$_ПАПКА_РАСПАКОВКИ_COPPELIASIM/scenes/user-scenes/nkbvs.ttt`
 - После чего сцена должна выглядить следующим образом 
 - ![скриншот_2](https://i.imgur.com/0tNJpx2.png?raw=true)
@@ -54,17 +66,24 @@ dd@dd-pc:~$ rostopic list
 - Чтобы проверить правильно ли все работает, необходимо ввести в коммандной строке `rostopic list` и должно получиться следующее 
 ```
 dd@dd-pc:~$ rostopic list
+/clicked_point
+/initialpose
+/move_base_simple/goal
 /rosout
 /rosout_agg
 /sim_ros_interface/odometry
-/sim_ros_interface/point_cloud
 /tf
+/tf_static
+/velodyne_points
+/vrep_velodyne/odometry
+
 ```
+- Больше всего нас интересуют
 - `/sim_ros_interface/odometry` - Топик в который предается одометрия. Сообщения типа **nav_msgs/Odometry** 
-- `/sim_ros_interface/point_cloud` - Топик в который предается облако точек. Сообщения типа **sensor_msgs/PointCloud2**
+- `/velodyne_points` - Топик в который предается облако точек. Сообщения типа **sensor_msgs/PointCloud2**
 ## Запуск Rviz
 Rviz - программа входящая в состав пакета ROS. Она предназначена для визуализации данных. Для того что бы запустить ее необходимо ввести команду `rviz -d rviz/default.rviz`
-- После запуска необходимо что во вкладке PointCloud2 поле **Topic** равен **/sim_ros_interface/point_cloud**
+- После запуска необходимо что во вкладке PointCloud2 поле **Topic** равен **/velodyne_points**
 - А в вкладке Odometry поле **Topic** равен **/sim_ros_interface/odometry**
 - После чего начнется отображения облако точек
-- ![скриншот_3](https://i.imgur.com/7Bw2EbG.png?raw=true)
+- ![скриншот_3](https://i.imgur.com/zUOtcM3.png?raw=true)
