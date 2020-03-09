@@ -2,8 +2,8 @@ require 'msg/Odometry'
 
 function sysCall_init()
     objectHandle=sim.getObjectAssociatedWithScript(sim.handle_self)
+    lidarHandler = sim.getObjectHandle('velodyneHDL_64E_S2')
     objectName=sim.getObjectName(objectHandle)
-    velodyneScript = sim.getScriptAssociatedWithObject(sim.getObjectHandle('velodyneHDL_64E_S2'))
     rosInterfacePresent=simROS
     if rosInterfacePresent then
         publisherOdometry = simROS.advertise("/sim_ros_interface/odometry","nav_msgs/Odometry",10)
@@ -14,7 +14,31 @@ end
 function sysCall_actuation()
 
     if rosInterfacePresent then
-        simROS.publish(publisherOdometry,createOdometryWithHeader(objectHandle,'world','odom'))   -- world is base frame        
+      
+      local pos = sim.getObjectPosition(objectHandle,-1)
+      local orient = sim.getObjectQuaternion(objectHandle,-1)
+      local lidarPos = sim.getObjectPosition(lidarHandler,objectHandle)
+      local lidarRot = sim.getObjectQuaternion(lidarHandler,objectHandle)
+      
+        simROS.publish(publisherOdometry,createOdometryWithHeader(objectHandle,'world','odom1'))   -- world is base frame        
+        -- Send Car base tf transformation
+        simROS.sendTransform({
+                header=createHeader(simROS.getTime(),'world'),
+                child_frame_id='odom',
+                transform={
+                    translation = {x=pos[1],y=pos[2],z=pos[3]},
+                    rotation = {x=orient[1],y=orient[2],z=orient[3],w=orient[4]}
+                }
+            })
+        -- Send Lidar tf transformation relative Car base
+        simROS.sendTransform({
+                header=createHeader(simROS.getTime(),'odom'),
+                child_frame_id='lidar',
+                transform={
+                    translation = {x=lidarPos[1],y=lidarPos[2],z=lidarPos[3]},
+                    rotation = {x=lidarRot[1],y=lidarRot[2],z=lidarRot[3],w=lidarRot[4]}
+                }
+            })
     end
    
 end

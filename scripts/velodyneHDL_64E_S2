@@ -8,7 +8,7 @@ function sysCall_init()
     end
     rotJointHandle=sim.getObjectHandle('velodyneHDL_64E_S2_rotJoint')
     ptCloudHandle=sim.getObjectHandle('velodyneHDL_64E_S2_ptCloud')
-    frequency=5 -- 5 Hz
+    frequency=50 -- 5 Hz
     options=2+8 -- bit0 (1)=do not display points, bit1 (2)=display only current points, bit2 (4)=returned data is polar (otherwise Cartesian), bit3 (8)=displayed points are emissive
     pointSize=2
     coloring_closeAndFarDistance={1,4}

@@ -6,8 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /PointCloud21
-        - /Odometry1
       Splitter Ratio: 0.5
     Tree Height: 228
   - Class: rviz/Selection
@@ -57,8 +55,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.0020483732223510742
-        Min Value: -0.009444355964660645
+        Max Value: 0.00208204984664917
+        Min Value: -0.009517639875411987
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -118,11 +116,34 @@ Visualization Manager:
       Topic: /sim_ros_interface/odometry
       Unreliable: false
       Value: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+        lidar:
+          Value: true
+        odom:
+          Value: true
+        world:
+          Value: true
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        world:
+          odom:
+            lidar:
+              {}
+      Update Interval: 0
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: odom
+    Fixed Frame: world
     Frame Rate: 30
   Name: root
   Tools:
@@ -146,7 +167,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 15.207947731018066
+      Distance: 19.84014320373535
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -161,10 +182,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.9097972512245178
+      Pitch: 1.2497972249984741
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.243584156036377
+      Yaw: 0.010399078018963337
     Saved: ~
 Window Geometry:
   Displays:
@@ -183,4 +204,4 @@ Window Geometry:
     collapsed: false
   Width: 986
   X: 98
-  Y: 503
+  Y: 213
